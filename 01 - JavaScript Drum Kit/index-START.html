@@ -57,8 +57,32 @@
   <audio data-key="75" src="sounds/tom.wav"></audio>
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
-<script>
+  <script>
+  function removeTransition(e){
+    if(e.propertyName !== 'transform') return;
+    this.classList.remove('playing')
+  }
+  function play(e){
+    //console.log(e.keyCode) 確認e.keyCode的值
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
+    if(!audio) return; //如果找不到audio 等於沒有對應的音樂 則返回(結束)
+    audio.currentTime =0; //播放時間設為0 可以重複無間段撥放 而不用等音檔結束
+    audio.play();
+    key.classList.add("playing") //藉由添加class 去改變樣式
+  }
+  const keys = document.querySelectorAll(".key")
+  keys.forEach(key=>key.addEventListener("transitionend",removeTransition))
+  /*
+    keys.forEach(key=>key.addEventListener("transitionend",(e)=>{console.log(e)}))
+    由console.log(e)可以探知(e)為我們添加class(playing)後所做的每一個轉變
+    分別會有border-color、box-shadow、transform 每一個轉變(propertyName) 又都有各自的狀態(type)
+    先使用addEventListener去偵測每個狀態，再從propertyName去尋找最後一個(transfom) 找到後即可確認轉變完成 就可以remove(playing)
 
+    keys 實際上為NodeList 不是Array 但允許使用forEach去對每一個元素做處裡
+    也可以使用 Array.formA(document.querySelectorAll('.key'))去轉換成Array
+  */
+  window.addEventListener('keydown',play)
 </script>
 
 
